@@ -18,8 +18,3 @@ steps:
       tag: 12.2.1.3.0
       working_directory: odi/12.2.1.3.0
 
-    analytics_producer:
-      title: Analytics Producer
-      image: ${{gradle_image}}
-      cmd:
-        - producer
