@@ -1,0 +1,31 @@
+version: '1.0'
+steps:
+    main_clone:
+      title: Cloning main repository...
+      type: git-clone
+      repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+      revision: '${{CF_REVISION}}'
+
+    gradle_image:
+      title: Build Gradle Image
+      type: build
+      image_name: gradle
+
+    define_vars:
+      title: Define Variables
+      image: ${{gradle_image}}
+      commands:
+        - cf_export ODI_SDK=$CF_VOLUME_PATH/$CF_REPO_NAME/odi-sdk/12.2.1.3.0
+        - cf_export ODI_HOME=/u01/oracle/odi1
+
+    odi_image:
+      title: Build ODI Image
+      type: build
+      image_name: odi
+      working_directory: odi
+
+    analytics_producer:
+      title: Analytics Producer
+      image: ${{gradle_image}}
+      cmd:
+        - producer

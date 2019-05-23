@@ -1,5 +1,24 @@
+# No log files
+*.log
+
+# No macOS files
+.DS_Store
+
+#Editor stuff
+.idea/
+*.iml
+out
+bin
+.settings
+.classpath
+.project
+.vscode
+
+# Gradle Cache directory
 .gradle
-/build/
+
+# Build Directories
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -10,5 +29,6 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
+# ODI specific library directory
+# We do this because there is no actual SDK available
+odi-sdk/
