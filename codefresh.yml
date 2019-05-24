@@ -1,35 +1,28 @@
 version: '1.0'
 steps:
     main_clone:
-      title: Cloning main repository...
+      title: Clone Main Repository
       type: git-clone
       repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
       revision: '${{CF_REVISION}}'
-
-    jdk_image_8u211:
-      title: Build JDK 8u211 Image
-      type: build
-      image_name: jdk
-      tag: 8u211
-      working_directory: jdk/8u211
 
     odi_image_122130:
       title: Build 12.2.1.3.0 Image
       type: build
       image_name: odi
       tag: 12.2.1.3.0
-      working_directory: odi/12.2.1.3.0
+      working_directory: 12.2.1.3.0
 
     odi_image_122131:
       title: Build 12.2.1.3.1 Image
       type: build
       image_name: odi
       tag: 12.2.1.3.1
-      working_directory: odi/12.2.1.3.1
+      working_directory: 12.2.1.3.1
 
     odi_image_122132:
       title: Build 12.2.1.3.2 Image
       type: build
       image_name: odi
       tag: 12.2.1.3.2
-      working_directory: odi/12.2.1.3.2
+      working_directory: 12.2.1.3.2
