@@ -10,7 +10,7 @@ RUN wget -q -O p29643497_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-
 RUN cd 29643497 && \
     su-exec oracle opatch apply -silent
 
-FROM jdk:8u211
+FROM r.cfcr.io/redpillanalytics/jdk:8u211
 
 ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
     ORACLE_HOME=/u01/oracle/odi1 \

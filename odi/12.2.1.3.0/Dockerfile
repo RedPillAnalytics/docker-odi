@@ -39,7 +39,7 @@ RUN chown oracle:oracle -R /u01 && \
 RUN su-exec oracle $JAVA_HOME/bin/java -jar $ODI_JAR -silent -invPtrLoc /u01/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ORACLE_HOME INSTALL_TYPE="Standalone Installation" && \
     rm fmw_12.2.1.3.0_odi.jar fmw_12.2.1.3.0_odi2.jar
 
-FROM jdk:8u211
+FROM r.cfcr.io/redpillanalytics/jdk:8u211
 
 ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
     ORACLE_HOME=/u01/oracle/odi1 \

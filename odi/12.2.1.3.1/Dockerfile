@@ -1,4 +1,4 @@
-FROM odi:12.2.1.3.0 as BUILD
+FROM  r.cfcr.io/redpillanalytics/odi:12.2.1.3.0 as BUILD
 
 RUN yum -y install wget unzip && \
     yum clean all
@@ -10,7 +10,7 @@ RUN wget -q -O p26669648_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-
 RUN cd 26669648 && \
     su-exec oracle opatch apply -silent
 
-FROM jdk:8u211
+FROM r.cfcr.io/redpillanalytics/jdk:8u211
 
 ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
     ORACLE_HOME=/u01/oracle/odi1 \
