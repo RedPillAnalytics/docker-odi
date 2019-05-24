@@ -8,7 +8,8 @@ RUN wget -q -O p29643497_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-
     chown oracle:oracle -R 29643497
 
 RUN cd 29643497 && \
-    su-exec oracle opatch apply -silent
+    su-exec oracle opatch apply -silent && \
+    rm -rf $ORACLE_HOME/.patch_storage
 
 FROM r.cfcr.io/redpillanalytics/jdk:8u211
 
