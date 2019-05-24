@@ -1,4 +1,4 @@
-FROM oraclelinux:7-slim
+FROM jdk:8u211 AS BUILD
 
 ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
     ODI_JAR=fmw_12.2.1.3.0_odi.jar \
@@ -10,14 +10,9 @@ ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
 
 ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_HOME/container-scripts:$ORACLE_HOME/OPatch
 
-RUN yum -y install wget which unzip make gcc && \
-    wget -q -O jdk-8u211-linux-x64.rpm https://s3.amazonaws.com/rpa-checkmate-resources/java/jdk-8u211-linux-x64.rpm && \
-    yum -y localinstall jdk-8u211-linux-x64.rpm && \
-    java -version && \
-    rm jdk-8u211-linux-x64.rpm && \
-    yum clean all
-
-RUN mkdir su-exec-tmp && \
+RUN yum -y install unzip make gcc && \
+    yum clean all && \
+    mkdir su-exec-tmp && \
     wget --quiet -O su-exec-tmp/su-exec.zip https://t.co/hsr02to11V && \
     unzip su-exec-tmp/su-exec.zip -d su-exec-tmp && \
     cd su-exec-tmp/su-exec-0.2 && \
@@ -43,3 +38,24 @@ RUN chown oracle:oracle -R /u01 && \
 
 RUN su-exec oracle $JAVA_HOME/bin/java -jar $ODI_JAR -silent -invPtrLoc /u01/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ORACLE_HOME INSTALL_TYPE="Standalone Installation" && \
     rm fmw_12.2.1.3.0_odi.jar fmw_12.2.1.3.0_odi2.jar
+
+FROM jdk:8u211
+
+ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
+    ODI_JAR=fmw_12.2.1.3.0_odi.jar \
+    ODI_JAR2=fmw_12.2.1.3.0_odi2.jar \
+    ORACLE_HOME=/u01/oracle/odi1 \
+    ODI_AGENT_PORT=20910 \
+    DOMAIN_NAME="${DOMAIN_NAME:-base_domain}" \
+    DOMAIN_ROOT="${DOMAIN_ROOT:-/u01/oracle/user_projects/domains}"
+
+ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_HOME/container-scripts:$ORACLE_HOME/OPatch
+
+RUN mkdir /u01 && \
+    useradd -b /u01 -d /u01/oracle -m -s /bin/bash oracle
+
+COPY --from=BUILD /u01 /u01
+COPY --from=BUILD /usr/bin/su-exec /usr/bin/su-exec
+
+RUN chown oracle:oracle -R /u01 && \
+    chmod a+xr /u01
