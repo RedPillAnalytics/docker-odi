@@ -1,4 +1,4 @@
-FROM odi:12.2.1.3.0 as BUILD
+FROM  r.cfcr.io/redpillanalytics/odi:12.2.1.3.0 as BUILD
 
 RUN yum -y install wget unzip && \
     yum clean all
