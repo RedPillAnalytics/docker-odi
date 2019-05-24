@@ -22,8 +22,8 @@ RUN yum -y install unzip make gcc && \
     cd / && \
     rm -rf su-exec-tmp
 
-RUN wget -q -O fmw_12.2.1.3.0_odi.jar https://s3.amazonaws.com/rpa-checkmate-resources/odi/12.2.1.3.0/software/fmw_12.2.1.3.0_odi.jar && \
-    wget -q -O fmw_12.2.1.3.0_odi2.jar https://s3.amazonaws.com/rpa-checkmate-resources/odi/12.2.1.3.0/software/fmw_12.2.1.3.0_odi2.jar
+RUN wget -q -O fmw_12.2.1.3.0_odi.jar https://s3.amazonaws.com/rpa-oracle-software/odi/12.2.1.3.0/fmw_12.2.1.3.0_odi.jar && \
+    wget -q -O fmw_12.2.1.3.0_odi2.jar https://s3.amazonaws.com/rpa-oracle-software/odi/12.2.1.3.0/fmw_12.2.1.3.0_odi2.jar
 
 RUN mkdir /u01 && \
     useradd -b /u01 -d /u01/oracle -m -s /bin/bash oracle && \
@@ -42,14 +42,13 @@ RUN su-exec oracle $JAVA_HOME/bin/java -jar $ODI_JAR -silent -invPtrLoc /u01/ora
 FROM jdk:8u211
 
 ENV JAVA_HOME=/usr/java/jdk1.8.0_211-amd64 \
-    ODI_JAR=fmw_12.2.1.3.0_odi.jar \
-    ODI_JAR2=fmw_12.2.1.3.0_odi2.jar \
     ORACLE_HOME=/u01/oracle/odi1 \
     ODI_AGENT_PORT=20910 \
     DOMAIN_NAME="${DOMAIN_NAME:-base_domain}" \
     DOMAIN_ROOT="${DOMAIN_ROOT:-/u01/oracle/user_projects/domains}"
 
-ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_HOME/container-scripts:$ORACLE_HOME/OPatch
+ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_HOME/container-scripts:$ORACLE_HOME/OPatch \
+    DOMAIN_HOME=$DOMAIN_ROOT/$DOMAIN_NAME
 
 RUN mkdir /u01 && \
     useradd -b /u01 -d /u01/oracle -m -s /bin/bash oracle
