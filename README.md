@@ -1,2 +1,2 @@
 # oracle-docker
-Dockerfiles and docker-compose.yml files for Oracle software images.
+Code for building containers using Oracle and Oracle Java containers.
