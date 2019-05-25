@@ -13,6 +13,8 @@ steps:
       image_name: odi
       tag: 12.2.1.3.0
       working_directory: 12.2.1.3.0
+      build_arguments:
+        - --squash
 
     patch_images:
       title: Build Patch Images
@@ -25,6 +27,8 @@ steps:
           image_name: odi
           tag: 12.2.1.3.1
           working_directory: 12.2.1.3.1
+          build_arguments:
+          - --squash
 
         image_122132:
           title: Build 12.2.1.3.2 Patch Image
@@ -32,3 +36,5 @@ steps:
           image_name: odi
           tag: 12.2.1.3.2
           working_directory: 12.2.1.3.2
+          build_arguments:
+          - --squash
