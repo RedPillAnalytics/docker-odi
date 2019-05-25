@@ -1,12 +1,13 @@
 FROM  r.cfcr.io/redpillanalytics/odi:12.2.1.3.0 as BUILD
 
-RUN yum -y install wget unzip && \
-    yum clean all
+ENV PATCH=29643497
 
-RUN wget -q -O p29643497_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-software/odi/12.2.1.3.2/p29643497_122130_Generic.zip  && \
-    unzip -q p29643497_122130_Generic.zip && \
-    chown oracle:oracle -R 29643497
+RUN wget -q -O p${PATCH}_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-software/odi/12.2.1.3.1/p${PATCH}_122130_Generic.zip  && \
+    unzip -q p${PATCH}_122130_Generic.zip && \
+    chown oracle:oracle -R ${PATCH}
 
-RUN cd 29643497 && \
-    su-exec oracle opatch apply -silent && \
-    rm -rf $ORACLE_HOME/.patch_storage
+RUN cd ${PATCH} && \
+    su-exec oracle opatch apply -silent -verbose && \
+    rm -rf $ORACLE_HOME/.patch_storage && \
+    cd / && \
+    rm -rf ${PATCH} p${PATCH}_122130_Generic.zip
