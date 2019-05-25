@@ -1,8 +1,9 @@
 FROM  r.cfcr.io/redpillanalytics/odi:12.2.1.3.0 as BUILD
 
-ENV PATCH=29643497
+ENV PATCH=29643497 \
+    VERSION=12.2.1.3.2
 
-RUN wget -q -O p${PATCH}_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-software/odi/12.2.1.3.1/p${PATCH}_122130_Generic.zip  && \
+RUN wget -q -O p${PATCH}_122130_Generic.zip https://s3.amazonaws.com/rpa-oracle-software/odi/${VERSION}/p${PATCH}_122130_Generic.zip  && \
     unzip -q p${PATCH}_122130_Generic.zip && \
     chown oracle:oracle -R ${PATCH}
 
@@ -11,3 +12,4 @@ RUN cd ${PATCH} && \
     rm -rf $ORACLE_HOME/.patch_storage && \
     cd / && \
     rm -rf ${PATCH} p${PATCH}_122130_Generic.zip
+
