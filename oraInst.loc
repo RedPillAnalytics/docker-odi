@@ -1,2 +1,2 @@
-inventory_loc=/u01/oracle/.inventory
+inventory_loc=/opt/oracle/.inventory
 inst_group=oracle
