@@ -10,7 +10,7 @@ ENV ODI_AGENT_PORT=20910
 ENV DOMAIN_NAME="${DOMAIN_NAME:-base_domain}"
 ENV DOMAIN_ROOT="${DOMAIN_ROOT:-/u01/oracle/user_projects/domains}"
 
-ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_BASE/container-scripts:$ORACLE_HOME/OPatch
+ENV PATH=$PATH:$ORACLE_HOME/oracle_common/common/bin:$ORACLE_HOME/oracle_common/bin:$ORACLE_BASE/container-scripts:$ORACLE_HOME/OPatch
 ENV ODI_JAR=fmw_${VERSION}_odi.jar
 ENV ODI_JAR2=fmw_${VERSION}_odi2.jar
 ENV MYSQL_USER=odi
@@ -38,4 +38,3 @@ RUN java -jar $ODI_JAR -silent -invPtrLoc ${ORACLE_BASE}/oraInst.loc -jreLoc $JA
 
 USER root
 RUN rm ${ODI_JAR} ${ODI_JAR2}
-
