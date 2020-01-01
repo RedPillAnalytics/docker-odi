@@ -119,7 +119,7 @@ export WORK_REPO_PASSWORD=$WORK_REPO_PASSWORD
 export jdbc_url="jdbc:oracle:thin:@"$CONNECTION_STRING
 
 export USE_TWO_PHASE_RCU=false
-PWD=$ORACLE_HOME/pwd.txt
+PWD=$ODI_HOME/pwd.txt
 echo $DB_PASSWORD > $PWD
 echo $DB_SCHEMA_PASSWORD >> $PWD
 #echo $SUPERVISOR_PASSWORD >> $PWD
@@ -129,7 +129,7 @@ echo D >> $PWD
 echo AES-128 >> $PWD
 
 
-CONTAINERCONFIG_DIR=$ORACLE_HOME/user_projects/ContainerData
+CONTAINERCONFIG_DIR=$ODI_HOME/user_projects/ContainerData
 
 #
 # Creating schemas needed for sample domain ####
@@ -163,7 +163,7 @@ fi
 if [ "$RUN_RCU" == "true" ] 
 then
     # Run the RCU.. it hasnt been loaded before.. 	
-    $ORACLE_HOME/oracle_common/bin/rcu -silent -createRepository -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba -useSamePasswordForAllSchemaUsers true -schemaPrefix $RCUPREFIX -component ODI < $PWD
+    $ODI_HOME/oracle_common/bin/rcu -silent -createRepository -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba -useSamePasswordForAllSchemaUsers true -schemaPrefix $RCUPREFIX -component ODI < $PWD
     retval=$?
 
     if [ $retval -ne 0 ]; 
@@ -190,7 +190,7 @@ fi
 
 if [ "$CONFIGURE_AGENT" == "true" ]
 then
-        CP=$ORACLE_HOME/odi/common/fmwprov/odi_config.jar:$ORACLE_HOME/odi/plugins/cam/oracle.odi-cam.jar
+        CP=$ODI_HOME/odi/common/fmwprov/odi_config.jar:$ODI_HOME/odi/plugins/cam/oracle.odi-cam.jar
         my_host="$HOST_NAME"
         agent_name="OracleDIAgent1"
         agent_port=$ODI_AGENT_PORT
@@ -220,7 +220,7 @@ fi
 
 if [ "$CONFIGURE_DOMAIN" == "true" ] 
 then
-	$ORACLE_HOME/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning $ORACLE_HOME/container-scripts/CreateODIDomain.py -oh $ORACLE_HOME -jh $JAVA_HOME -parent $DOMAIN_ROOT -name $DOMAIN_NAME -rcuDb $CONNECTION_STRING -rcuPrefix $RCUPREFIX -rcuSchemaPwd $DB_SCHEMA_PASSWORD -supervisorPwd $SUPERVISOR_PASSWORD
+	$ODI_HOME/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning ${ORACLE_BASE}/CreateODIDomain.py -oh $ODI_HOME -jh $JAVA_HOME -parent $DOMAIN_ROOT -name $DOMAIN_NAME -rcuDb $CONNECTION_STRING -rcuPrefix $RCUPREFIX -rcuSchemaPwd $DB_SCHEMA_PASSWORD -supervisorPwd $SUPERVISOR_PASSWORD
 	retval=$?
 	if [ $retval -ne 0 ]
 	then
@@ -229,15 +229,15 @@ then
 	else
 	   	# Write the Domain suc file... 
 	   	touch $CONTAINERCONFIG_DIR/ODI.Domain.Configure.suc
-	   	echo "$ORACLE_HOME/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning $ORACLE_HOME/container-scripts/CreateODIDomain.py -oh $ORACLE_HOME -jh $JAVA_HOME -parent $DOMAIN_ROOT -name $DOMAIN_NAME -rcuDb $CONNECTION_STRING -rcuPrefix $RCUPREFIX -rcuSchemaPwd $DB_SCHEMA_PASSWORD" >> $CONTAINERCONFIG_DIR/ODI.Domain.Configure.suc
+	   	echo "$ODI_HOME/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning ${ORACLE_BASE}//CreateODIDomain.py -oh $ODI_HOME -jh $JAVA_HOME -parent $DOMAIN_ROOT -name $DOMAIN_NAME -rcuDb $CONNECTION_STRING -rcuPrefix $RCUPREFIX -rcuSchemaPwd $DB_SCHEMA_PASSWORD" >> $CONTAINERCONFIG_DIR/ODI.Domain.Configure.suc
 	   	echo "CONNECTION_STRING=$CONNECTION_STRING" > $CONTAINERCONFIG_DIR/contenv.sh
 	   	echo "RCUPREFIX=$RCUPREFIX" >> $CONTAINERCONFIG_DIR/contenv.sh
 	   	echo "DB_SCHEMA_PASSWORD=$DB_SCHEMA_PASSWORD" >> $CONTAINERCONFIG_DIR/contenv.sh
 
                 # Setting env variables
                 #=======================
-                echo ". $DOMAIN_ROOT/$DOMAIN_NAME/bin/setODIDomainEnv.sh" >> $ORACLE_HOME/.bashrc
-                echo "export PATH=$PATH:$ORACLE_HOME/common/bin:$DOMAIN_ROOT/$DOMAIN_NAME/bin" >> $ORACLE_HOME/.bashrc
+                echo ". $DOMAIN_ROOT/$DOMAIN_NAME/bin/setODIDomainEnv.sh" >> $ODI_HOME/.bashrc
+                echo "export PATH=$PATH:$ODI_HOME/common/bin:$DOMAIN_ROOT/$DOMAIN_NAME/bin" >> $ODI_HOME/.bashrc
 	fi
 fi
 
@@ -247,10 +247,8 @@ fi
 
 echo "Starting ODI Agent"
 
-$DOMAIN_ROOT/$DOMAIN_NAME/bin/agent.sh -NAME=OracleDIAgent1 > $ORACLE_HOME/logs/startAgent$$.log 2>&1 &
+$DOMAIN_ROOT/$DOMAIN_NAME/bin/agent.sh -NAME=OracleDIAgent1 > ${LOG_DIR}/startAgent$$.log 2>&1 &
 
-tail -f $ORACLE_HOME/logs/startAgent$$.log &
-
-childPID=$!
-wait $childPID
-
+# conclude when scheduler is successful
+( tail -f ${LOG_DIR}/startAgent$$.log & ) | grep -q "Scheduler started for work repository WORKREP on Agent OracleDIAgent1"
+echo "Container ready"
