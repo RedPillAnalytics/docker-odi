@@ -197,7 +197,7 @@ then
         agent_app="oraclediagent"
         agent_protocol="http"
 
-        $JAVA_HOME/bin/java -cp $CP oracle.odi.util.odiConfigAgent ${RCUPREFIX}_ODI_REPO $DB_SCHEMA_PASSWORD $jdbc_url $agent_name $my_host $agent_port $agent_app $agent_protocol $agent_name SUPERVISOR $SUPERVISOR_PASSWORD
+        $JAVA_HOME/bin/java -cp $CP oracle.odi.util.odiConfigAgent ${RCUPREFIX}_ODI_REPO $DB_SCHEMA_PASSWORD $jdbc_url $agent_name $my_host $agent_port $agent_app $agent_protocol $agent_name #SUPERVISOR $SUPERVISOR_PASSWORD
         retval=$?
         if [ $retval -ne 0 ]
         then
