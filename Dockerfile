@@ -4,7 +4,7 @@ ENV JDK=jdk-8u231-linux-x64
 
 ENV JDK_RPM=${JDK}.rpm \
     JAVA_HOME=/usr/java/jdk1.8.0_231-amd64 \
-    VERSION=12.2.1.3.0 \
+    VERSION=12.2.1.4.0 \
     ORACLE_BASE=/opt/oracle
 
 ENV ODI_HOME=${ORACLE_BASE}/odi1 \
@@ -18,7 +18,6 @@ ENV ODI_HOME=${ORACLE_BASE}/odi1 \
 
 ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracle_common/bin:$ODI_HOME/OPatch \
     ODI_JAR=fmw_${VERSION}_odi.jar \
-    ODI_JAR2=fmw_${VERSION}_odi2.jar \
     ORACLE_PWD=Admin123
 
 ENV CONNECTION_STRING=localhost:1521/XEPDB1 \
@@ -38,7 +37,6 @@ RUN yum -y install which make gcc \
     && java -version \
     && rm ${JDK_RPM} \
     && curl -o $ODI_JAR https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${ODI_JAR} \
-    && curl -o $ODI_JAR2 https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${ODI_JAR2} \
     && mkdir -p $LOG_DIR $ODI_HOME \
     && chown oracle:oinstall -R ${ORACLE_BASE} \
     && chmod a+xr $ORACLE_BASE/*.sh
@@ -46,22 +44,9 @@ RUN yum -y install which make gcc \
 USER oracle
 RUN java -jar $ODI_JAR -silent -invPtrLoc ${ORACLE_BASE}/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ODI_HOME INSTALL_TYPE="Standalone Installation"
 
-ENV PATCH=29643497
-ENV PATCH_FILE=p${PATCH}_122130_Generic.zip \
-    VERSION=12.2.1.3.2
-
-USER root
-RUN curl -o ${PATCH_FILE} https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${PATCH_FILE} \
-    && unzip -q ${PATCH_FILE} \
-    && chown oracle:oinstall -R ${PATCH}
-
-USER oracle
-WORKDIR ${PATCH}
-RUN opatch apply -oh ${ODI_HOME} -silent
-
 USER root
 WORKDIR /
-RUN rm -rf ${ODI_JAR} ${ODI_JAR2} ${PATCH} ${PATCH_FILE} $ORACLE_HOME/.patch_storage
+RUN rm -rf ${ODI_JAR}
 
 COPY ${RUN_ODI} ${CREATE_ODI} ${ORACLE_BASE}/
 RUN chown oracle:oinstall -R ${ORACLE_BASE} \
