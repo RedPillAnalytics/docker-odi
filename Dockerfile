@@ -18,6 +18,7 @@ ENV ODI_HOME=${ORACLE_BASE}/odi1 \
 
 ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracle_common/bin:$ODI_HOME/OPatch \
     ODI_JAR=fmw_${VERSION}_odi.jar \
+    ODI_JAR2=fmw_${VERSION}_odi2.jar \
     ORACLE_PWD=Admin123
 
 ENV CONNECTION_STRING=localhost:1521/XEPDB1 \
@@ -37,6 +38,7 @@ RUN yum -y install which make gcc \
     && java -version \
     && rm ${JDK_RPM} \
     && curl -o $ODI_JAR https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${ODI_JAR} \
+    && curl -o $ODI_JAR2 https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${ODI_JAR2} \
     && mkdir -p $LOG_DIR $ODI_HOME \
     && chown oracle:oinstall -R ${ORACLE_BASE} \
     && chmod a+xr $ORACLE_BASE/*.sh
@@ -46,7 +48,7 @@ RUN java -jar $ODI_JAR -silent -invPtrLoc ${ORACLE_BASE}/oraInst.loc -jreLoc $JA
 
 USER root
 WORKDIR /
-RUN rm -rf ${ODI_JAR}
+RUN rm -rf ${ODI_JAR} ${ODI_JAR2}
 
 COPY ${RUN_ODI} ${CREATE_ODI} ${ORACLE_BASE}/
 RUN chown oracle:oinstall -R ${ORACLE_BASE} \
