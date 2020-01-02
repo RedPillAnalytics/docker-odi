@@ -1,0 +1,139 @@
+plugins {
+   id 'base'
+   id "maven-publish"
+   id "com.google.cloud.buildartifacts.gradle-plugin" version "1.1.0"
+   id "pl.allegro.tech.build.axion-release" version "1.10.3"
+   id "com.github.breadmoirai.github-release" version "2.2.10"
+   id "com.github.ben-manes.versions" version "0.27.0"
+}
+
+scmVersion {
+   tag {
+      prefix = "v"
+      versionSeparator = ''
+   }
+   ignoreUncommittedChanges = true
+}
+
+//set Gradle version to SCM Version
+allprojects {
+   project.version = "${scmVersion.version}"
+}
+
+publishing {
+   repositories {
+      maven {
+         url "buildartifacts://maven.pkg.dev/rpa-devops/checkmate"
+      }
+   }
+}
+
+repositories {
+   jcenter()
+   maven {
+      url "buildartifacts://maven.pkg.dev/rpa-devops/checkmate"
+   }
+}
+
+task cleanDists(type: Delete) {
+   delete getDistsDir()
+}
+
+task('sdk', type: Zip) {
+   group "build"
+   description "Build a distribution ZIP of the ODI SDK."
+   includeEmptyDirs false
+   from System.getenv('ODI_HOME') ?: '/opt/oracle/odi1'
+
+   include 'jdeveloper/external/oracle.external.ucp.jar'
+   include 'jdeveloper/ide/extensions/oracle.ide.persistence.jar'
+   include 'jdeveloper/external/oracle.external.eclipselinkjaxb.jar'
+   include 'jdeveloper/wlserver/lib/wls-classes-for-jdev.jar'
+   include 'odi/sdk/lib/XmlSchema-1.4.2.jar'
+   include 'odi/sdk/lib/activation.jar'
+   include 'odi/sdk/lib/aopalliance.jar'
+   include 'odi/sdk/lib/bsf.jar'
+   include 'odi/sdk/lib/commons-codec-1.3.jar'
+   include 'odi/sdk/lib/commons-discovery-0.4.jar'
+   include 'odi/sdk/lib/commons-logging-1.2.jar'
+   include 'odi/sdk/lib/commons-net-3.3.jar'
+   include 'odi/sdk/lib/commons-vfs-1.0.jar'
+   include 'odi/sdk/lib/connector.jar'
+   include 'odi/sdk/lib/cpld.jar'
+   include 'odi/sdk/lib/enterprise_data_quality.jar'
+   include 'odi/sdk/lib/hsqldb.jar'
+   include 'odi/sdk/lib/jakarta-oro-2.0.8.jar'
+   include 'odi/sdk/lib/javolution.jar'
+   include 'odi/sdk/lib/jms.jar'
+   include 'odi/sdk/lib/jython.jar'
+   include 'odi/sdk/lib/odi-core.jar'
+   include 'odi/sdk/lib/odi-sap.jar'
+   include 'odi/sdk/lib/odi-wls-template-gen.jar'
+   include 'odi/sdk/lib/odihapp_common.jar'
+   include 'odi/sdk/lib/odihapp_essbase.jar'
+   include 'odi/sdk/lib/odihapp_planning.jar'
+   include 'odi/sdk/lib/ogg_jmx_interface.jar'
+   include 'odi/sdk/lib/oracle.odi-jaxrsri.jar'
+   include 'odi/sdk/lib/oracle.odi-sdk-jse.jar'
+   include 'odi/sdk/lib/org.eclipse.jgit_3.6.2.201501210735-r.jar'
+   include 'odi/sdk/lib/pop3.jar'
+   include 'odi/sdk/lib/sapjco3.jar'
+   include 'odi/sdk/lib/spring-aop.jar'
+   include 'odi/sdk/lib/spring-beans.jar'
+   include 'odi/sdk/lib/spring-context-support.jar'
+   include 'odi/sdk/lib/spring-context.jar'
+   include 'odi/sdk/lib/spring-core.jar'
+   include 'odi/sdk/lib/spring-expression.jar'
+   include 'odi/sdk/lib/spring-instrument-tomcat.jar'
+   include 'odi/sdk/lib/spring-instrument.jar'
+   include 'odi/sdk/lib/spring-jdbc.jar'
+   include 'odi/sdk/lib/spring-jms.jar'
+   include 'odi/sdk/lib/spring-orm.jar'
+   include 'odi/sdk/lib/spring-oxm.jar'
+   include 'odi/sdk/lib/spring-struts.jar'
+   include 'odi/sdk/lib/spring-test.jar'
+   include 'odi/sdk/lib/spring-tx.jar'
+   include 'odi/sdk/lib/spring-web.jar'
+   include 'odi/sdk/lib/spring-webmvc-portlet.jar'
+   include 'odi/sdk/lib/spring-webmvc.jar'
+   include 'odi/sdk/lib/svnkit-1.8.3.jar'
+   include 'odi/sdk/lib/trilead-ssh2-1.0.0-build217.jar'
+   include 'odi/sdk/lib/trove.jar'
+   include 'oracle_common/modules/oracle.ucp.jar'
+   include 'oracle_common/modules/javax.persistence.jar'
+   include 'oracle_common/modules/oracle.idm/identitystore.jar'
+   include 'oracle_common/modules/oracle.jdbc/ojdbc8.jar'
+   include 'oracle_common/modules/oracle.jps/jps-api.jar'
+   include 'oracle_common/modules/oracle.odl/ojdl.jar'
+   include 'oracle_common/modules/oracle.toplink/eclipselink.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.jpa.jpql.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.jpa.jpql.source.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.jpa.modelgen.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.jpa.modelgen.source.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.nosql.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.nosql.source.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.oracle.nosql.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.oracle.nosql.source.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.tools.oracleddl.jar'
+   include 'oracle_common/modules/oracle.toplink/org.eclipse.persistence.tools.oracleddl.source.jar'
+   include 'oracle_common/modules/org.apache.maven_3.2.5/lib/commons-lang-2.6.jar'
+   include 'oracle_common/modules/thirdparty/bsh-2.0b4.jar'
+   include 'oracle_common/modules/thirdparty/commons-collections-3.2.2.jar'
+   include 'oracle_common/modules/thirdparty/commons-beanutils-1.9.3.jar'
+   include 'oracle_common/modules/thirdparty/jackson-core-2.7.9.jar'
+   include 'oracle_common/modules/thirdparty/jackson-databind-2.7.9.1.jar'
+   include 'oracle_common/modules/thirdparty/features/bsh.vb4.jar'
+   include 'wlserver/modules/com.oracle.weblogic.rac.ucp.jar'
+   include 'wlserver/modules/com.oracle.weblogic.persistence.jar'
+   include 'oracle_common/modules/oracle.toplink/eclipselink-dbwsutils.jar'
+   include 'oracle_common/modules/com.sun.xml.ws.sdo-eclipselink-plugin.jar'
+   include 'oracle_common/modules/com.sun.xml.ws.jaxws-eclipselink-plugin.jar'
+   include 'wlserver/modules/com.oracle.core.eclipselink.integration.jar'
+}
+
+tasks.publish.dependsOn tasks.sdk
+
+tasks.withType(Test) {
+   testLogging.showStandardStreams true
+   systemProperty 'projectDir', temporaryDir
+}

@@ -14,7 +14,9 @@ ENV ODI_HOME=${ORACLE_BASE}/odi1 \
     LOG_DIR=${ORACLE_BASE}/logs \
     ORA_INST=oraInst.loc \
     RUN_ODI=runODI.sh \
-    CREATE_ODI=CreateODIDomain.py
+    CREATE_ODI=CreateODIDomain.py \
+    SDK_DIR=odi-sdk \
+    SDK_SCRIPT=buildSdk.sh
 
 ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracle_common/bin:$ODI_HOME/OPatch \
     ODI_JAR=fmw_${VERSION}_odi.jar \
