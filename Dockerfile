@@ -15,7 +15,6 @@ ENV ODI_HOME=${ORACLE_BASE}/odi1 \
     ORA_INST=oraInst.loc \
     RUN_ODI=runODI.sh \
     CREATE_ODI=CreateODIDomain.py \
-    SDK_DIR=odi-sdk \
     SDK_SCRIPT=buildSdk.sh
 
 ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracle_common/bin:$ODI_HOME/OPatch \
@@ -52,7 +51,7 @@ USER root
 WORKDIR /
 RUN rm -rf ${ODI_JAR} ${ODI_JAR2}
 
-COPY ${RUN_ODI} ${CREATE_ODI} ${ORACLE_BASE}/
+COPY ${RUN_ODI} ${CREATE_ODI} ${SDK_SCRIPT} ${ORACLE_BASE}/
 RUN chown oracle:oinstall -R ${ORACLE_BASE} \
     && chmod a+xr $ORACLE_BASE/*.sh
 
