@@ -14,7 +14,8 @@ ENV ODI_HOME=${ORACLE_BASE}/odi1 \
     LOG_DIR=${ORACLE_BASE}/logs \
     ORA_INST=oraInst.loc \
     RUN_ODI=runODI.sh \
-    CREATE_ODI=CreateODIDomain.py
+    CREATE_ODI=CreateODIDomain.py \
+    SDK_SCRIPT=buildSdk.sh
 
 ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracle_common/bin:$ODI_HOME/OPatch \
     ODI_JAR=fmw_${VERSION}_odi.jar \
@@ -23,7 +24,7 @@ ENV PATH=$PATH:${ORACLE_BASE}:$ODI_HOME/oracle_common/common/bin:$ODI_HOME/oracl
 
 ENV CONNECTION_STRING=localhost:1521/XEPDB1 \
     HOST_NAME=localhost \
-    RCUPREFIX=odi1 \
+    RCUPREFIX=DEV \
     DB_PASSWORD=$ORACLE_PWD \
     DB_SCHEMA_PASSWORD=$ORACLE_PWD \
     SUPERVISOR_PASSWORD=$ORACLE_PWD \
@@ -63,7 +64,8 @@ USER root
 WORKDIR /
 RUN rm -rf ${ODI_JAR} ${ODI_JAR2} ${PATCH} ${PATCH_FILE} $ORACLE_HOME/.patch_storage
 
-COPY ${RUN_ODI} ${CREATE_ODI} ${ORACLE_BASE}/
+COPY ${RUN_ODI} ${CREATE_ODI} ${SDK_SCRIPT} ${ORACLE_BASE}/
+
 RUN chown oracle:oinstall -R ${ORACLE_BASE} \
     && chmod a+xr $ORACLE_BASE/*.sh
 
