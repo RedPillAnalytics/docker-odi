@@ -85,3 +85,4 @@ cp ${ODI_HOME}/oracle_common/modules/oracle.toplink/eclipselink-dbwsutils.jar ${
 cp ${ODI_HOME}/oracle_common/modules/com.sun.xml.ws.sdo-eclipselink-plugin.jar ${SDK_DIR}
 cp ${ODI_HOME}/oracle_common/modules/com.sun.xml.ws.jaxws-eclipselink-plugin.jar ${SDK_DIR}
 cp ${ODI_HOME}/wlserver/modules/com.oracle.core.eclipselink.integration.jar ${SDK_DIR}
+zip odi-sdk-${VERSION}.zip ${SDK_DIR}
