@@ -11,7 +11,7 @@ steps:
   entrypoint: ./gradlew
   args:
     - publish
-    - Si
+    - -Si
   id: build-sdk
 - name: 'gcr.io/$PROJECT_ID/odi:$BRANCH_NAME'
   id: kaniko-test
