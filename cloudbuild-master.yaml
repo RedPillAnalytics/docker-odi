@@ -7,4 +7,6 @@ steps:
   - --context=./
   - --single-snapshot
   id: kaniko-build
+- name: 'gcr.io/$PROJECT_ID/odi:latest'
+  id: kaniko-test
 timeout: 3600s
