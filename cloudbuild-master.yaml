@@ -10,4 +10,3 @@ steps:
 - name: 'gcr.io/$PROJECT_ID/odi:latest'
   id: kaniko-test
 timeout: 7200s
-
