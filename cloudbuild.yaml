@@ -18,4 +18,4 @@ steps:
   id: sdk-publish
 - name: 'gcr.io/$PROJECT_ID/odi:$BRANCH_NAME'
   id: kaniko-test
-timeout: 3600s
+timeout: 7200s
