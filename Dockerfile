@@ -45,6 +45,19 @@ RUN yum -y install which make gcc \
 USER oracle
 RUN java -jar $ODI_JAR -silent -invPtrLoc ${ORACLE_BASE}/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ODI_HOME INSTALL_TYPE="Standalone Installation"
 
+ENV PATCH=30803114
+ENV PATCH_FILE=p${PATCH}_122140_Generic.zip \
+    VERSION=12.2.1.4.0
+
+USER root
+RUN curl -o ${PATCH_FILE} https://s3.amazonaws.com/software.redpillanalytics.io/oracle/odi/${VERSION}/${PATCH_FILE} \
+    && unzip -q ${PATCH_FILE} \
+    && chown oracle:oinstall -R ${PATCH}
+
+USER oracle
+WORKDIR ${PATCH}
+RUN opatch apply -oh ${ODI_HOME} -silent
+
 USER root
 WORKDIR /
 RUN rm -rf ${ODI_JAR}
